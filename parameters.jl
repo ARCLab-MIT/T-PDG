@@ -1,4 +1,4 @@
-#= Lossless convexification rocket landing data structures.
+#= Updated from Lossless convexification rocket landing data structures.
 
 Sequential convex programming algorithms for trajectory optimization.
 Copyright (C) 2021 Autonomous Controls Laboratory (University of Washington),
@@ -14,13 +14,15 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>. =#
+this program.  If not, see <https://www.gnu.org/licenses/>. 
+
+Last edited: 5/25/2023 by Julia Briden.=#
+
 
 using LinearAlgebra
 using Symbolics
 using SCPToolbox
 using Debugger
-include("obstacles.jl")
 
 
 # ..:: Data structures ::..
@@ -52,21 +54,6 @@ struct Rocket
     n::Int            # Number of states
     m::Int            # Number of inputs
     constraints::Dict{String, Bool} # Toggleable list of constraints
-end
-
-"""
-`Environment` holds the environment parameters.
-"""
-struct Environment
-    obstacles::Vector{Ellipse_Obstacle}
-    polynomial_obs::Vector{Num}
-    expected_vals::Vector{Any}
-    risk_contours::Vector{Tuple{Symbolics.Num, Symbolics.Num}}
-    risk_equation::Vector{Symbolics.Num}
-    evaluated_risk::Vector{Float64}
-    evaluated_test_cond::Vector{Float64}
-    x_plot::Vector{Float64}
-    y_plot::Vector{Float64}
 end
 
 """
@@ -128,130 +115,6 @@ function Rocket(g, θ, T_sidereal_mars, m_dry, m_wet, Isp, n_eng, φ, T_max, γ_
                     r0,rf,v0,vf,N,A_c,B_c,p_c,n,m,constraints)
 
     return rocket
-end # function
-
-"""
-    τ()
-
-Constructor for the constraints.
-
-# Returns
-- `environment`: the environment definition.
-"""
-function τ()::Environment
-    # Number of obstacles to generate
-    n = 3
-    # Landing location size (using [0,1] for ease of computation and projecting back to the original landing location size)
-    x_range = [0.0, 1.0]
-    y_range = [0.0, 1.0]
-    # Crater size: https://astronomy.swin.edu.au/~smaddiso/astro/moon/craters.html#:~:text=Most%20craters%20between%2020%20and,least%20300%20km%20in%20diameter.
-    # Range for major axis values
-    a_range = [.1, .2]
-    # Range for minor axis values
-    b_range = [.05, .1]
-
-    # Generate a set of random elliptical obstacles for the given parameters
-    obstacles = generateObstacles(n,x_range,y_range,a_range,b_range)
-    
-    # Pregenerated obstacle options:
-    #obstacles = Ellipse_Obstacle[Ellipse_Obstacle(342.9, 278.6, 2.95, 162.6, 140.3), Ellipse_Obstacle(415.5, 432.7, 5.21, 109.1, 93.9), Ellipse_Obstacle(31.0, 60.2, 5.41, 80.1, 120.9), Ellipse_Obstacle(45.9, 114.6, 4.34, 21.6, 80.8), Ellipse_Obstacle(367.5, 487.1, 0.4, 31.7, 31.8), Ellipse_Obstacle(86.8, 434.0, 3.7, 32.0, 20.7), Ellipse_Obstacle(375.5, 89.5, 5.3, 106.5, 67.9), Ellipse_Obstacle(411.4, 71.3, 0.78, 60.5, 145.5), Ellipse_Obstacle(340.1, 301.2, 1.1400000000000001, 41.2, 159.3), Ellipse_Obstacle(78.1, 212.4, 0.63, 30.3, 46.9)]
-    #obstacles = Ellipse_Obstacle[Ellipse_Obstacle(0, 0, 0, .4, .4)]
-
-    # Landing site visualization
-    #plotObstacles(obstacles,x_range,y_range)
-
-    # Use Julia Symbolics to generate polynomial equations for each elliptical obstacle
-    poly = generatePolynomial(obstacles)
-
-    # l is the lower bound for the distribution that describes the uncertain parameters (major and minor axes)
-    # u is the upper bound for the distribution that describes the uncertain parameters (major and minor axes)
-    l = [ [a_range[1], b_range[1]] for i in 1:n ]
-    u = [ [a_range[2], b_range[2]] for i in 1:n ]
-
-    # Use Julia Symbolics to calculate the expected values or moments for the set of obstacles
-    exp_vals = GenerateExpectedValues(poly,l,u)
-
-    # Use the calucated moments to compute the inner approximation of the risk countor (Equation 10 in https://arxiv.org/pdf/2106.05489.pdf)
-    risk_contours = generateRiskContours(exp_vals)
-
-    # Sum the first equation in the risk contour set described in Equation 10 for all obstacles to generate a total risk equation
-    risk_equation = generateTotalRiskEquation(risk_contours)
-
-    # Determine resolution for evaluating the risk contour over the landing site (higher resolutions take a longer time to evaluate: O(N^2) runtime complexity)
-    step_size = 0.01
-
-    # Evaluate the risk contour equation over the discretized landing site
-    (evaluated_risk, evaluated_test_cond, x_plot, y_plot) = calculateRisk(risk_equation, x_range, y_range, step_size)
-
-    #plotRisk(evaluated_risk, x_plot, y_plot)
-
-    # Save all environment information to the Environment structure
-    environment = Environment(obstacles, poly, exp_vals, risk_contours, risk_equation, evaluated_risk, evaluated_test_cond, x_plot, y_plot)
-
-    return environment
-    
-end # function
-
-"""
-    Environment()
-
-Constructor for the environment.
-
-# Returns
-- `environment`: the environment definition.
-"""
-function Environment()::Environment
-    # Number of obstacles to generate
-    n = 3
-    # Landing location size (using [0,1] for ease of computation and projecting back to the original landing location size)
-    x_range = [0.0, 1.0]
-    y_range = [0.0, 1.0]
-    # Crater size: https://astronomy.swin.edu.au/~smaddiso/astro/moon/craters.html#:~:text=Most%20craters%20between%2020%20and,least%20300%20km%20in%20diameter.
-    # Range for major axis values
-    a_range = [.1, .2]
-    # Range for minor axis values
-    b_range = [.05, .1]
-
-    # Generate a set of random elliptical obstacles for the given parameters
-    obstacles = generateObstacles(n,x_range,y_range,a_range,b_range)
-    
-    # Pregenerated obstacle options:
-    #obstacles = Ellipse_Obstacle[Ellipse_Obstacle(342.9, 278.6, 2.95, 162.6, 140.3), Ellipse_Obstacle(415.5, 432.7, 5.21, 109.1, 93.9), Ellipse_Obstacle(31.0, 60.2, 5.41, 80.1, 120.9), Ellipse_Obstacle(45.9, 114.6, 4.34, 21.6, 80.8), Ellipse_Obstacle(367.5, 487.1, 0.4, 31.7, 31.8), Ellipse_Obstacle(86.8, 434.0, 3.7, 32.0, 20.7), Ellipse_Obstacle(375.5, 89.5, 5.3, 106.5, 67.9), Ellipse_Obstacle(411.4, 71.3, 0.78, 60.5, 145.5), Ellipse_Obstacle(340.1, 301.2, 1.1400000000000001, 41.2, 159.3), Ellipse_Obstacle(78.1, 212.4, 0.63, 30.3, 46.9)]
-    #obstacles = Ellipse_Obstacle[Ellipse_Obstacle(0, 0, 0, .4, .4)]
-
-    # Landing site visualization
-    #plotObstacles(obstacles,x_range,y_range)
-
-    # Use Julia Symbolics to generate polynomial equations for each elliptical obstacle
-    poly = generatePolynomial(obstacles)
-
-    # l is the lower bound for the distribution that describes the uncertain parameters (major and minor axes)
-    # u is the upper bound for the distribution that describes the uncertain parameters (major and minor axes)
-    l = [ [a_range[1], b_range[1]] for i in 1:n ]
-    u = [ [a_range[2], b_range[2]] for i in 1:n ]
-
-    # Use Julia Symbolics to calculate the expected values or moments for the set of obstacles
-    exp_vals = GenerateExpectedValues(poly,l,u)
-
-    # Use the calucated moments to compute the inner approximation of the risk countor (Equation 10 in https://arxiv.org/pdf/2106.05489.pdf)
-    risk_contours = generateRiskContours(exp_vals)
-
-    # Sum the first equation in the risk contour set described in Equation 10 for all obstacles to generate a total risk equation
-    risk_equation = generateTotalRiskEquation(risk_contours)
-
-    # Determine resolution for evaluating the risk contour over the landing site (higher resolutions take a longer time to evaluate: O(N^2) runtime complexity)
-    step_size = 0.01
-
-    # Evaluate the risk contour equation over the discretized landing site
-    (evaluated_risk, evaluated_test_cond, x_plot, y_plot) = calculateRisk(risk_equation, x_range, y_range, step_size)
-
-    #plotRisk(evaluated_risk, x_plot, y_plot)
-
-    # Save all environment information to the Environment structure
-    environment = Environment(obstacles, poly, exp_vals, risk_contours, risk_equation, evaluated_risk, evaluated_test_cond, x_plot, y_plot)
-
-    return environment
-    
 end # function
 
 
