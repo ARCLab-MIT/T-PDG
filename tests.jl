@@ -1,4 +1,4 @@
-#= Tests for lossless convexification rocket landing.
+#= Modified from Tests for lossless convexification rocket landing.
 
 Sequential convex programming algorithms for trajectory optimization.
 Copyright (C) 2021 Autonomous Controls Laboratory (University of Washington)
@@ -13,9 +13,9 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>. =#
+this program.  If not, see <https://www.gnu.org/licenses/>. 
 
-#nolint: golden
+Last edited: 5/25/2023 by Julia Briden.=#
 
 include("parameters.jl")
 include("definition.jl")
@@ -257,23 +257,6 @@ function lcvx(plots_on::Bool, sim_on::Bool, timer_on::Bool, rocket = Rocket(); s
 
     return pdg,strategy,sim,strategy_time,feasibility_time,full_problem_time,is_feasible_reduced, is_feasible_check
 
-
-end # function
-
-function realtimeGuidance()
-
-    # Define the vehicle
-    rocket = Rocket()
-    #environment = Environment()
-
-    tol = 1e-3
-    tf_min = rocket.m_dry * norm(rocket.v0, 2) / rocket.ρ_max
-    tf_max = (rocket.m_wet - rocket.m_dry) / (rocket.α * rocket.ρ_min)
-
-    reduced_problem = create_reduced_problem(rocket, tf_max-60)
-
-    #solve_reduced_problem(rocket, tf_min, reduced_problem; environment = nothing)
- 
 
 end # function
 
