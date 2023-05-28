@@ -20,14 +20,17 @@ The lossless convexification (LCvx) algorithm, which was used for problem traini
 ## Included Folders and Files
 * T-PDG
     * src - Contains required files for running the algorithm
-        * results - result figures and datasets are saved here
+        * Data - .pkl files including mean and standard deviations for the datasets are stored here, as well as standardized training and testing data
+        * Models - Trained transformer models are stored here
+        * Results - Result figures and datasets are saved here
+        * Sampling - .csv files sampled from LCvx with tight constraints and optimal final times are stored here
         * definition.jl - LCvx optimization problem created, constraints are added, and the optimization problem is solved
         * parameters.jl - Constructors for setting up Rocket and Solution structures
         * T-PDG.jl - Creates a package from the src files
         * tests.jl - Tests the T-PDG algorithm and compares runtime and feasibility with LCvx
     * Tests - Contains files for running the guidance algorithm and plots
         * plots.jl - Contains all plotting functions
-        * run_tests.jl - Run the guidance algorithm using 
+        * run_tests.jl - Run T-PDG using 
         
                 include("Tests/run_tests.jl")
 
