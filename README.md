@@ -1,6 +1,8 @@
 # T-PDG
 Transformer-based Powered Descent Guidance (T-PDG), a scalable algorithm for reducing the computational complexity of the direct optimization formulation of the spacecraft powered descent guidance problem.
 
+![T-PDG Trajectories](https://github.com/jujubriden/T-PDG/blob/main/src/Results/T-PDG%20Trajectory.gif)
+
 The lossless convexification (LCvx) algorithm, which was used for problem training and test data, was adapted from the [SCP Toolbox](https://github.com/UW-ACL/SCPToolbox.jl)[^1].
 
 To Run:
@@ -10,6 +12,10 @@ To Run:
 2. Ensure PyCall is installed with the correct Python path and LaTeX is downloaded.
 
 3. In Julia run include("Tests/run_tests.jl") inside of the T-PDG folder.
+
+To Design New Transformer Models, Train & Test, or Visualize Model Embeddings with T-SNE:
+
+1. Open Tests/NN_Train_and_Test.ipynb and navigate to the most relevant section for your task.
 
 * T-PDG
     * src - Contains required files for running the algorithm
