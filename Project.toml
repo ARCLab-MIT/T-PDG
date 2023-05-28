@@ -1,0 +1,11 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
+ECOS = "e2685f51-7e38-5353-a97d-a921fd2c8199"
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+SCPToolbox = "bd2bc758-a5dc-11eb-050f-6b2434548817"
+Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
