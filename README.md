@@ -5,7 +5,7 @@ Transformer-based Powered Descent Guidance (T-PDG), a scalable algorithm for red
 
 The lossless convexification (LCvx) algorithm, which was used for problem training and test data, was adapted from the [SCP Toolbox](https://github.com/UW-ACL/SCPToolbox.jl)[^1].
 
-To Run:
+## To Run:
 
 1. Make sure [SCP Toolbox](https://github.com/UW-ACL/SCPToolbox.jl) is also installed.
 
@@ -13,10 +13,11 @@ To Run:
 
 3. In Julia run include("Tests/run_tests.jl") inside of the T-PDG folder.
 
-To Design New Transformer Models, Train & Test, or Visualize Model Embeddings with T-SNE:
+## To Design New Models, Train & Test, or Visualize Models with t-SNE:
 
 1. Open Tests/NN_Train_and_Test.ipynb and navigate to the most relevant section for your task.
 
+## Included Folders and Files
 * T-PDG
     * src - Contains required files for running the algorithm
         * results - result figures and datasets are saved here
