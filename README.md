@@ -29,6 +29,7 @@ The lossless convexification (LCvx) algorithm, which was used for problem traini
         * T-PDG.jl - Creates a package from the src files
         * tests.jl - Tests the T-PDG algorithm and compares runtime and feasibility with LCvx
     * Tests - Contains files for running the guidance algorithm and plots
+        * NN_Train_and_Test.ipynb - Preprocess data, train and test transformer neural networks, and visualize embeddings using t-SNE
         * plots.jl - Contains all plotting functions
         * run_tests.jl - Run T-PDG using 
         
