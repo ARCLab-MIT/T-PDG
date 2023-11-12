@@ -34,6 +34,21 @@ The lossless convexification (LCvx) algorithm, which was used for problem traini
         * run_tests.jl - Run T-PDG using 
         
                 include("Tests/run_tests.jl")
+## Citing
+
+If you use T-PDG in your work, kindly cite the following associated publication.
+
+```
+@article{TPDGSciTech2024,
+  year = {2024},
+  month = jan,
+  publisher = {American Institute of Aeronautics and Astronautics ({AIAA})},
+  author = {Julia Briden and Trey Gurga and Breanna Johnson and Abhishek Cauligi and Richard Linares},
+  title = {Improving Computational Efficiency for Powered Descent Guidance via Transformer-based Tight Constraint Prediction},
+  journal = {{AIAA} SciTech},
+  note = {Free preprint available at [https://arxiv.org/abs/2311.05135](https://arxiv.org/abs/2311.05135)}
+}
+```
 
 [^1]: Danylo Malyuta, Taylor P. Reynolds, Michael Szmuk, Thomas Lew, Riccardo Bonalli, Marco Pavone, Behçet Açıkmeşe. "Convex Optimization for Trajectory Generation: A Tutorial on Generating Dynamically Feasible Trajectories Reliably and Efficiently". *IEEE Control Systems*, 42(5), pp. 40-113, 2022. [DOI: 10.1109/mcs.2022.3187542](https://doi.org/10.1109/mcs.2022.3187542). Free preprint available at [https://arxiv.org/abs/2106.09125](https://arxiv.org/abs/2106.09125)
 
